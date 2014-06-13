@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.GraphicsConfiguration;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -10,11 +12,14 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
+import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
-public class MainFrame extends JFrame
+public class MainFrame extends JFrame implements KeyListener
 {
+	private Cube mCube;
+
 	public static void main(String[] args)
 	{
 		new MainFrame();
@@ -23,7 +28,7 @@ public class MainFrame extends JFrame
 	public MainFrame()
 	{
 		super("Rubik's Cube Demo");
-		setSize(300, 300);
+		setSize(800, 800);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Java3D関係の設定
@@ -55,10 +60,45 @@ public class MainFrame extends JFrame
 		colors[3] = new Color3f(Color.BLUE);
 		colors[4] = new Color3f(Color.GREEN);
 		colors[5] = new Color3f(Color.YELLOW);
-        Cube cube  = new Cube(0, 0, 0, 0.5);
-        universe.addBranchGraph(cube);
+        mCube  = new Cube(0, 0, 0, 0.5, colors);
+        universe.addBranchGraph(mCube);
 
         // JFrame を表示
         setVisible(true);
+        addKeyListener(this);
+	}
+
+	int x = 0;
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		Vector3d vec;
+		Transform3D tr;
+		switch (e.getKeyCode())
+		{
+			case KeyEvent.VK_RIGHT:
+				//mCube.translate(1, 0, 0);
+				mCube.lotateX(Math.PI / 6);
+				break;
+			case KeyEvent.VK_LEFT:
+				mCube.translate(-1, 0, 0);
+				break;
+
+			default:
+				break;
+		}
+
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e)
+	{
+
 	}
 }

@@ -14,12 +14,14 @@ public class Cube extends BranchGroup
 	public static final int F = 4;
 	public static final int B =5;
 
+	TransformGroup mTransGroup;
+	Vector3d mPoint;
+	double mRotX;
 	private double mR;
 	private double mX;
 	private double mY;
 	private double mZ;
 	private Color3f[] mColors; //R,L,U,D,F,B
-	private Color3f mBaseColor;
 	Point3d[] mVertices;
 	int[] mIndices = { 3, 2, 6,  3, 6, 7, //R
 								4, 5, 1,  4, 1, 0, //L
@@ -32,26 +34,23 @@ public class Cube extends BranchGroup
             2, 2, 2,  2, 2, 2,    3, 3, 3,  3, 3, 3,
             4, 4, 4,  4, 4, 4,    5, 5, 5,  5, 5, 5 };
 
-	public Cube(double x,double y,double z,double r)
+	public Cube(double x,double y,double z,double r, Color3f[] colors)
 	{
 		mR = r;
 		mX = x;
 		mY = y;
 		mZ = z;
-		mBaseColor = new Color3f(Color.BLACK);
-		for (int i=0;i<=mColors.length;i++)
-		{
-			mColors[i] = new Color3f(Color.BLACK);
-		}
+		mPoint = new Vector3d(x,y,z);
+		mColors = colors;
 		mVertices = new Point3d[8];
-		mVertices[0] =  new Point3d(-mR+mX,mR+mY,mR+mZ);	//左上前
-		mVertices[1] =  new Point3d(-mR+mX,-mR+mY,mR+mZ);	//左下前
-		mVertices[2] =  new Point3d(mR+mX,-mR+mY,mR+mZ);	//右下前
-		mVertices[3] =  new Point3d(mR+mX,mR+mY,mR+mZ);		//右上前
-		mVertices[4] =  new Point3d(-mR+mX,mR+mY,-mR+mZ);	//左上奥
-		mVertices[5] =  new Point3d(-mR+mX,-mR+mY,-mR+mZ);//左下奥
-		mVertices[6] =  new Point3d(mR+mX,-mR+mY,-mR+mZ);//右下奥
-		mVertices[7] =  new Point3d(mR+mX,mR+mY,-mR+mZ);	//右上奥
+		mVertices[0] =  new Point3d(-mR,mR,mR);	//左上前
+		mVertices[1] =  new Point3d(-mR,-mR,mR);	//左下前
+		mVertices[2] =  new Point3d(mR,-mR,mR);	//右下前
+		mVertices[3] =  new Point3d(mR,mR,mR);		//右上前
+		mVertices[4] =  new Point3d(-mR,mR,-mR);	//左上奥
+		mVertices[5] =  new Point3d(-mR,-mR,-mR);//左下奥
+		mVertices[6] =  new Point3d(mR,-mR,-mR);//右下奥
+		mVertices[7] =  new Point3d(mR,mR,-mR);	//右上奥
 
 		generate();
 	}
@@ -68,17 +67,45 @@ public class Cube extends BranchGroup
 
         // 回転を設定
         Shape3D shape = new Shape3D(geometry);
-        TransformGroup trans = new TransformGroup();
+        mTransGroup = new TransformGroup();
+        mTransGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        Transform3D t1 = new Transform3D();
+        t1.setTranslation(mPoint);
+        mTransGroup.setTransform(t1);
 
         // BranchGroup に登録
-        trans.addChild(shape);
-        addChild(trans);
+        mTransGroup.addChild(shape);
+        addChild(mTransGroup);
 	}
 
-	public void setColors(Color3f[] colors)
+	public TransformGroup getTrans()
 	{
-		mColors = colors;
-		generate();
+		return mTransGroup;
+	}
+
+	public void setTransform(Transform3D t1)
+	{
+		mTransGroup.setTransform(t1);
+	}
+
+	public void translate(double x,double y,double z)
+	{
+		mPoint.x += x;
+		mPoint.y += y;
+		mPoint.z += z;
+		Transform3D t1 = new Transform3D();
+        t1.setTranslation(mPoint);
+		mTransGroup.setTransform(t1);
+	}
+
+	Transform3D rot = new Transform3D();
+	public void lotateX(double angle)
+	{
+		mRotX += angle;
+		if(mRotX > 2*Math.PI)
+			mRotX %=2*Math.PI;
+		rot.rotY(mRotX);
+		mTransGroup.setTransform(rot);
 	}
 
 }
