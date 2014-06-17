@@ -30,10 +30,10 @@ public class Cube extends BranchGroup
 	private double mX;
 	private double mY;
 	private double mZ;
-	Point3d[] mVertices;
-	Component mComponent;
-	RubikColor[] mColors;
-
+	private Point3d[] mVertices;
+	private Component mComponent;
+	private RubikColor[] mColors;
+	
 	public Cube(Component component, double x, double y, double z, double r,
 			RubikColor[] colors)
 	{

@@ -21,7 +21,7 @@ import com.sun.j3d.utils.universe.ViewingPlatform;
 
 public class MainFrame extends JFrame implements KeyListener
 {
-	private Cube mCube;
+	private RubiksCube mCube;
 
 	public static void main(String[] args)
 	{
@@ -57,7 +57,7 @@ public class MainFrame extends JFrame implements KeyListener
         Camera.setTransform(cameraTrans);
 
         RubikColor[] colors = {RubikColor.RED,RubikColor.ORANGE,RubikColor.WHITE,RubikColor.BLUE,RubikColor.GREEN,RubikColor.YELLOW};
-		mCube  = new Cube(this,1, 1, 1, 0.5, colors);
+		mCube  = new RubiksCube(this);
 		universe.addBranchGraph(mCube);
 
 		// JFrame を表示
@@ -72,15 +72,15 @@ public class MainFrame extends JFrame implements KeyListener
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_R:
-				mCube.rotateX(Math.PI/6);
+				mCube.Right(Math.PI/6);
 				break;
 
 			case KeyEvent.VK_U:
-				mCube.rotateY(Math.PI/6);
+				//mCube.rotateY(Math.PI/6);
 				break;
 
 			case KeyEvent.VK_F:
-				mCube.rotateZ(Math.PI/6);
+				//mCube.rotateZ(Math.PI/6);
 				break;
 
 			default:
