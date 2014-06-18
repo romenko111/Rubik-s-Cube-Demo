@@ -18,6 +18,7 @@ import jp.romerome.rubikscubedemo.RubiksCube.RubikColor;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.IO;
 
 public class MainFrame extends JFrame implements KeyListener
 {
@@ -38,6 +39,7 @@ public class MainFrame extends JFrame implements KeyListener
 		GraphicsConfiguration g_config = SimpleUniverse
 				.getPreferredConfiguration();
 		Canvas3D canvas = new Canvas3D(g_config);
+		canvas.addKeyListener(this);
 		add(canvas);
 		setVisible(true);
 
@@ -52,7 +54,7 @@ public class MainFrame extends JFrame implements KeyListener
         TransformGroup Camera = vp.getViewPlatformTransform();
 
         Transform3D cameraTrans = new Transform3D();
-        cameraTrans.lookAt(new Point3d(10,10,10),new Point3d(0,0,0), new Vector3d(0,1,0));
+        cameraTrans.lookAt(new Point3d(7,8,10),new Point3d(0,0,0), new Vector3d(0,1,0));
         cameraTrans.invert();
         Camera.setTransform(cameraTrans);
 
@@ -69,10 +71,12 @@ public class MainFrame extends JFrame implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
+		System.out.println("keypressed");
 		switch (e.getKeyCode())
 		{
 			case KeyEvent.VK_R:
-				mCube.Right(Math.PI/6);
+				if(!mCube.isMoving())
+				mCube.Right();
 				break;
 
 			case KeyEvent.VK_U:
@@ -81,6 +85,10 @@ public class MainFrame extends JFrame implements KeyListener
 
 			case KeyEvent.VK_F:
 				//mCube.rotateZ(Math.PI/6);
+				break;
+				
+			case KeyEvent.VK_L:
+				mCube.Left(Math.PI/6);
 				break;
 
 			default:
@@ -92,12 +100,12 @@ public class MainFrame extends JFrame implements KeyListener
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-
+		System.out.println("keyreleased");
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-
+		System.out.println("keytyped");
 	}
 }
