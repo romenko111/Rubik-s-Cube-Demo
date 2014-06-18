@@ -33,7 +33,7 @@ public class Cube extends BranchGroup
 	private Point3d[] mVertices;
 	private Component mComponent;
 	private RubikColor[] mColors;
-	
+
 	public Cube(Component component, double x, double y, double z, double r,
 			RubikColor[] colors)
 	{
@@ -153,5 +153,9 @@ public class Cube extends BranchGroup
 		mTransGroup.setTransform(mRot);
 	}
 
+	public TransformGroup getTransformGroup()
+	{
+		return mTransGroup;
+	}
 
 }

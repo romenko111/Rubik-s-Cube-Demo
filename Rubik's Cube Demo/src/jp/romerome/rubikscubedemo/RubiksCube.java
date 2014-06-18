@@ -2,10 +2,7 @@ package jp.romerome.rubikscubedemo;
 import java.awt.Component;
 import java.util.Timer;
 import java.util.TimerTask;
-
 import javax.media.j3d.BranchGroup;
-
-import com.sun.prism.j2d.paint.MultipleGradientPaint.ColorSpaceType;
 
 public class RubiksCube extends BranchGroup
 {
@@ -25,7 +22,7 @@ public class RubiksCube extends BranchGroup
 	public static final int LD = 6;
 	public static final int CD = 7;
 	public static final int RD = 8;
-	
+
 	private Component mComponent;
 	private Cube[] mRight;
 	private Cube[] mLeft;
@@ -35,7 +32,7 @@ public class RubiksCube extends BranchGroup
 	private Cube[] mBack;
 	private double mR = 0.5;
 	private boolean isMoving;
-	
+
 	public RubiksCube(Component component)
 	{
 		mComponent = component;
@@ -46,10 +43,10 @@ public class RubiksCube extends BranchGroup
 		mFront = new Cube[9];
 		mBack = new Cube[9];
 		isMoving = false;
-		
+
 		genRubikCube();
 	}
-	
+
 	private void genRubikCube()
 	{
 		RubikColor[] colors = new RubikColor[6];
@@ -61,42 +58,42 @@ public class RubiksCube extends BranchGroup
 		Cube cube = new Cube(mComponent, 1, 1, 1, mR, colors);
 		mRight[LU] = mFront[RU] = mUp[RD] =cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 1, 1, 0, mR, colors);
 		mRight[CU] = mUp[RC] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.YELLOW;
 		cube = new Cube(mComponent, 1, 1, -1, mR, colors);
 		mRight[RU] = mUp[RU] = mBack[LU] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.U] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 1, 0, -1, mR, colors);
 		mRight[RC] = mBack[LC] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.D] = RubikColor.BLUE;
 		cube = new Cube(mComponent, 1, -1, -1, mR, colors);
 		mRight[RD] = mBack[LD] = mDown[RD]= cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 1, -1, 0, mR, colors);
 		mRight[CD] = mDown[RC]= cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.GREEN;
 		cube = new Cube(mComponent, 1, -1, 1, mR, colors);
 		mRight[LD] = mDown[RU]= mFront[RD] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.D] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 1, 0, 1, mR, colors);
 		mRight[LC] = mFront[RC]= cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 1, 0, 0, mR, colors);
 		mRight[CC] = cube;
@@ -110,42 +107,42 @@ public class RubiksCube extends BranchGroup
 		cube = new Cube(mComponent, -1, 1, -1, mR, colors);
 		mLeft[LU] = mBack[RU] = mUp[LU] =cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.BLACK;
 		cube = new Cube(mComponent, -1, 1, 0, mR, colors);
 		mLeft[CU] = mUp[LC] =cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.GREEN;
 		cube = new Cube(mComponent, -1, 1, 1, mR, colors);
 		mLeft[RU] = mUp[LD] = mFront[LU] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.U] = RubikColor.BLACK;
 		cube = new Cube(mComponent, -1, 0, 1, mR, colors);
 		mLeft[RC] = mFront[LC] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.D] = RubikColor.BLUE;
 		cube = new Cube(mComponent, -1, -1, 1, mR, colors);
 		mLeft[RD] = mFront[LD] =  mDown[LU] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.BLACK;
 		cube = new Cube(mComponent, -1, -1, 0, mR, colors);
 		mLeft[CD] = mDown[LC] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.YELLOW;
 		cube = new Cube(mComponent, -1, -1, -1, mR, colors);
 		mLeft[LD] = mDown[LD] =  mBack[RD] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.D] = RubikColor.BLACK;
 		cube = new Cube(mComponent, -1, 0, -1, mR, colors);
 		mLeft[LC] = mBack[RC] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.BLACK;
 		cube = new Cube(mComponent, -1, 0, 0, mR, colors);
 		mLeft[CC] = cube;
@@ -158,12 +155,12 @@ public class RubiksCube extends BranchGroup
 		cube = new Cube(mComponent, 0, 1, -1, mR, colors);
 		mUp[CU] = mBack[CU] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 0, 1, 0, mR, colors);
 		mUp[CC] =  cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.GREEN;
 		cube = new Cube(mComponent, 0, 1, 1, mR, colors);
 		mUp[CD] = mFront[CU] = cube;
@@ -176,12 +173,12 @@ public class RubiksCube extends BranchGroup
 		cube = new Cube(mComponent, 0, -1, 1, mR, colors);
 		mDown[CU] = mFront[CD] = cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.F] = RubikColor.BLACK;
 		cube = new Cube(mComponent, 0, -1, 0, mR, colors);
 		mDown[CC] =  cube;
 		addChild(cube);
-		
+
 		colors[RubiksCube.B] = RubikColor.YELLOW;
 		cube = new Cube(mComponent, 0, -1, -1, mR, colors);
 		mDown[CD] = mBack[CD] = cube;
@@ -202,7 +199,7 @@ public class RubiksCube extends BranchGroup
 		addChild(cube);
 		//------------------------
 	}
-	
+
 	private void InitColor(RubikColor[] colors)
 	{
 		for(int i=0;i<colors.length;i++)
@@ -216,13 +213,13 @@ public class RubiksCube extends BranchGroup
 				mRight[i].rotateX(angle);
 		}
 	}
-	
+
 	public void Right()
 	{
 		Timer timer = new Timer();
-		timer.schedule(new MyTimerTask(mRight), 0,1);
+		timer.schedule(new MyTimerTask(mRight), 0,50);
 	}
-	
+
 	public void Left(double angle)
 	{
 		for(int i = 0;i<mLeft.length;i++)
@@ -231,22 +228,22 @@ public class RubiksCube extends BranchGroup
 				mLeft[i].rotateX(angle);
 		}
 	}
-	
+
 	public boolean isMoving()
 	{
 		return isMoving;
 	}
-	
+
 	private class MyTimerTask extends TimerTask
 	{
 		private int cnt = 0;
 		private Cube[] cubes;
-		
+
 		public MyTimerTask(Cube[] cubes)
 		{
 			this.cubes = cubes;
 		}
-		
+
 		public void setCubes(Cube[] cubes)
 		{
 			this.cubes = cubes;
@@ -271,7 +268,7 @@ public class RubiksCube extends BranchGroup
 			}
 		}
 	}
-	
+
 	enum RubikColor
 	{
 		WHITE("white.png"),BLUE("blue.png"),
