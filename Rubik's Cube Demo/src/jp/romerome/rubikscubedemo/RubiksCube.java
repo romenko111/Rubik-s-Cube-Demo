@@ -206,27 +206,81 @@ public class RubiksCube extends BranchGroup
 			colors[i] = RubikColor.BLACK;
 	}
 
-	public void Right(double angle)
-	{
-		for(int i = 0;i<mRight.length;i++)
-		{
-				mRight[i].rotateX(angle);
-		}
-	}
-
 	public void Right()
 	{
+		if(isMoving) return;
 		Timer timer = new Timer();
-		timer.schedule(new MyTimerTask(mRight), 0,50);
+		timer.schedule(new MyTimerTask(R), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mRight[i];
+		}
+		//R
+		mRight[CU] = temp[LC]; mRight[LC] = temp[CD]; mRight[CD] = temp[RC]; mRight[RC] = temp[CU]; 
+		mRight[LU] = temp[LD]; mRight[LD] = temp[RD]; mRight[RD] = temp[RU]; mRight[RU] = temp[LU];
+		
+		//B
+		mBack[LU] = temp[LU]; mBack[LC] = temp[CU]; mBack[LD] = temp[RU];
+		//U
+		mUp[RU] = temp[LU]; mUp[RC] = temp[LC]; mUp[RD] = temp[LD];
+		//F
+		mFront[RU] = temp[LD]; mFront[RC] = temp[CD]; mFront[RD] = temp[RD];
+		//D
+		mDown[RU] = temp[RD]; mDown[RC] = temp[RC]; mDown[RD] = temp[RC];
 	}
 
-	public void Left(double angle)
+	public void Left()
 	{
-		for(int i = 0;i<mLeft.length;i++)
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(L), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
 		{
-			if(mLeft[i] != null)
-				mLeft[i].rotateX(angle);
+			temp[i] = mLeft[i];
 		}
+		
+		//L
+		mLeft[CU] = temp[LC]; mLeft[LC] = temp[CD]; mLeft[CD] = temp[RC]; mLeft[RC] = temp[CU]; 
+		mLeft[LU] = temp[LD]; mLeft[LD] = temp[RD]; mLeft[RD] = temp[RU]; mLeft[RU] = temp[LU];
+		
+		//B
+		mBack[RU] = temp[LD]; mBack[RC] = temp[CD]; mBack[RD] = temp[RD];
+		//U
+		mUp[LU] = temp[LD]; mUp[LC] = temp[LC]; mUp[LD] = temp[LU];
+		//F
+		mFront[LU] = temp[LU]; mFront[LC] = temp[CU]; mFront[LD] = temp[RU];
+		//D
+		mDown[LU] = temp[RU]; mDown[LC] = temp[RC]; mDown[LD] = temp[RD];
+	}
+	
+	public void Up()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(U), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mUp[i];
+		}
+		
+		//U
+		mUp[CU] = temp[LC]; mUp[LC] = temp[CD]; mUp[CD] = temp[RC]; mUp[RC] = temp[CU]; 
+		mUp[LU] = temp[LD]; mUp[LD] = temp[RD]; mUp[RD] = temp[RU]; mUp[RU] = temp[LU];
+		
+		//B
+		mBack[LU] = temp[LU]; mBack[CU] = temp[LC]; mBack[RU] = temp[LD];
+		//L
+		mLeft[LU] = temp[LD]; mLeft[CU] = temp[CD]; mLeft[RU] = temp[RD];
+		//F
+		mFront[LU] = temp[RD]; mFront[CU] = temp[RC]; mFront[RU] = temp[RU];
+		//R
+		mRight[LU] = temp[RU]; mRight[CU] = temp[CU]; mRight[RU] = temp[LU];
 	}
 
 	public boolean isMoving()
@@ -237,16 +291,11 @@ public class RubiksCube extends BranchGroup
 	private class MyTimerTask extends TimerTask
 	{
 		private int cnt = 0;
-		private Cube[] cubes;
+		private int men;
 
-		public MyTimerTask(Cube[] cubes)
+		public MyTimerTask(int men)
 		{
-			this.cubes = cubes;
-		}
-
-		public void setCubes(Cube[] cubes)
-		{
-			this.cubes = cubes;
+			this.men = men;
 		}
 
 		@Override
@@ -261,10 +310,33 @@ public class RubiksCube extends BranchGroup
 			}
 			else
 			{
-				for(int i = 0;i<cubes.length;i++)
+				switch (men)
 				{
-						cubes[i].rotateX(Math.PI/18);
+					case RubiksCube.R:
+						for(int i = 0;i<mRight.length;i++)
+						{
+								mRight[i].rotateX(-Math.PI/18);
+						}
+						break;
+						
+					case RubiksCube.L:
+						for(int i = 0;i<mLeft.length;i++)
+						{
+								mLeft[i].rotateX(Math.PI/18);
+						}
+						break;
+						
+					case RubiksCube.U:
+						for(int i = 0;i<mUp.length;i++)
+						{
+								mUp[i].rotateY(-Math.PI/18);
+						}
+						break;
+
+					default:
+						break;
 				}
+				
 			}
 		}
 	}

@@ -46,6 +46,7 @@ public class Cube extends BranchGroup
 		mPoint = new Vector3d(x, y, z);
 		mTransGroup = new TransformGroup();
 		mTransGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+		mTransGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		mRot = new Transform3D();
 		mVertices = new Point3d[8];
 		mVertices[0] = new Point3d(-mR + mX, mR + mY, mR + mZ); // 左上前

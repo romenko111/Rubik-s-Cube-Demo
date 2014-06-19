@@ -75,30 +75,7 @@ public class MainFrame extends JFrame implements KeyListener
 
         RubikColor[] colors = {RubikColor.RED,RubikColor.ORANGE,RubikColor.WHITE,RubikColor.BLUE,RubikColor.GREEN,RubikColor.YELLOW};
 		mRubiksCube  = new RubiksCube(this);
-		//universe.addBranchGraph(mRubiksCube);
-
-		mCube = new Cube(this, 1, 1, 1, 0.5, colors);
-		TransformGroup rotation= mCube.getTransformGroup();
-		alpha=new Alpha(
-				1,
-				Alpha.INCREASING_ENABLE,
-				0,
-				0,
-				500,
-				0,
-				0,
-				0,
-				0,
-				0);
-		Transform3D axis = new Transform3D();
-		axis.setRotation(new AxisAngle4d(0.0, 0.0, 1.0, Math.PI/2));
-		interpolator=new RotationInterpolator(alpha,rotation,axis,0,(float) (Math.PI/2));
-		BoundingSphere bounds=new BoundingSphere(
-				new Point3d(0.0,0.0,0.0),100.0);	// 原点を中心とする半径 100.0 の範囲
-
-			interpolator.setSchedulingBounds(bounds);
-		rotation.addChild(interpolator);
-		universe.addBranchGraph(mCube);
+		universe.addBranchGraph(mRubiksCube);
 
 		// JFrame を表示
 		setVisible(true);
@@ -116,20 +93,10 @@ public class MainFrame extends JFrame implements KeyListener
 				if(!mRubiksCube.isMoving())
 				mRubiksCube.Right();
 
-				if(alpha.finished())
-				{
-					angle+= Math.PI/2;
-					if(angle > Math.PI *2)
-						angle %= Math.PI*2;
-					interpolator.setMinimumAngle((float) angle);
-					interpolator.setMaximumAngle((float) (angle + Math.PI/2));
-					alpha.setStartTime(System.currentTimeMillis());
-				}
-
 				break;
 
 			case KeyEvent.VK_U:
-				//mCube.rotateY(Math.PI/6);
+				mRubiksCube.Up();
 				break;
 
 			case KeyEvent.VK_F:
@@ -137,7 +104,7 @@ public class MainFrame extends JFrame implements KeyListener
 				break;
 
 			case KeyEvent.VK_L:
-				mRubiksCube.Left(Math.PI/6);
+				mRubiksCube.Left();
 				break;
 
 			default:
