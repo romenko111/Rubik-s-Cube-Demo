@@ -100,11 +100,19 @@ public class MainFrame extends JFrame implements KeyListener
 				break;
 
 			case KeyEvent.VK_F:
-				//mCube.rotateZ(Math.PI/6);
+				mRubiksCube.Front();
 				break;
 
 			case KeyEvent.VK_L:
 				mRubiksCube.Left();
+				break;
+				
+			case KeyEvent.VK_D:
+				mRubiksCube.Down();
+				break;
+				
+			case KeyEvent.VK_B:
+				mRubiksCube.Back();
 				break;
 
 			default:

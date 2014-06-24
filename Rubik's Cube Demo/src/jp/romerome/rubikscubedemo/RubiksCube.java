@@ -205,6 +205,12 @@ public class RubiksCube extends BranchGroup
 		for(int i=0;i<colors.length;i++)
 			colors[i] = RubikColor.BLACK;
 	}
+	
+	private void Rotate(Cube[] cubes, Cube[] temp)
+	{
+		cubes[CU] = temp[LC]; cubes[LC] = temp[CD]; cubes[CD] = temp[RC]; cubes[RC] = temp[CU]; 
+		cubes[LU] = temp[LD]; cubes[LD] = temp[RD]; cubes[RD] = temp[RU]; cubes[RU] = temp[LU];
+	}
 
 	public void Right()
 	{
@@ -217,9 +223,7 @@ public class RubiksCube extends BranchGroup
 		{
 			temp[i] = mRight[i];
 		}
-		//R
-		mRight[CU] = temp[LC]; mRight[LC] = temp[CD]; mRight[CD] = temp[RC]; mRight[RC] = temp[CU]; 
-		mRight[LU] = temp[LD]; mRight[LD] = temp[RD]; mRight[RD] = temp[RU]; mRight[RU] = temp[LU];
+		Rotate(mRight, temp);
 		
 		//B
 		mBack[LU] = temp[LU]; mBack[LC] = temp[CU]; mBack[LD] = temp[RU];
@@ -228,7 +232,7 @@ public class RubiksCube extends BranchGroup
 		//F
 		mFront[RU] = temp[LD]; mFront[RC] = temp[CD]; mFront[RD] = temp[RD];
 		//D
-		mDown[RU] = temp[RD]; mDown[RC] = temp[RC]; mDown[RD] = temp[RC];
+		mDown[RU] = temp[RD]; mDown[RC] = temp[RC]; mDown[RD] = temp[RU];
 	}
 
 	public void Left()
@@ -242,10 +246,7 @@ public class RubiksCube extends BranchGroup
 		{
 			temp[i] = mLeft[i];
 		}
-		
-		//L
-		mLeft[CU] = temp[LC]; mLeft[LC] = temp[CD]; mLeft[CD] = temp[RC]; mLeft[RC] = temp[CU]; 
-		mLeft[LU] = temp[LD]; mLeft[LD] = temp[RD]; mLeft[RD] = temp[RU]; mLeft[RU] = temp[LU];
+		Rotate(mLeft, temp);
 		
 		//B
 		mBack[RU] = temp[LD]; mBack[RC] = temp[CD]; mBack[RD] = temp[RD];
@@ -268,10 +269,7 @@ public class RubiksCube extends BranchGroup
 		{
 			temp[i] = mUp[i];
 		}
-		
-		//U
-		mUp[CU] = temp[LC]; mUp[LC] = temp[CD]; mUp[CD] = temp[RC]; mUp[RC] = temp[CU]; 
-		mUp[LU] = temp[LD]; mUp[LD] = temp[RD]; mUp[RD] = temp[RU]; mUp[RU] = temp[LU];
+		Rotate(mUp, temp);
 		
 		//B
 		mBack[LU] = temp[LU]; mBack[CU] = temp[LC]; mBack[RU] = temp[LD];
@@ -281,6 +279,75 @@ public class RubiksCube extends BranchGroup
 		mFront[LU] = temp[RD]; mFront[CU] = temp[RC]; mFront[RU] = temp[RU];
 		//R
 		mRight[LU] = temp[RU]; mRight[CU] = temp[CU]; mRight[RU] = temp[LU];
+	}
+	
+	public void Down()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(D), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mDown[i];
+		}
+		Rotate(mDown, temp);
+		
+		//R
+		mRight[LD] = temp[LU]; mRight[CD] = temp[CU]; mRight[RD] = temp[RU];
+		//B
+		mBack[LD] = temp[RU]; mBack[CD] = temp[RC]; mBack[RD] = temp[RD];
+		//L
+		mLeft[LD] = temp[RD]; mLeft[CD] = temp[CD]; mLeft[RD] = temp[LD];
+		//F
+		mFront[LD] = temp[LD]; mFront[CD] = temp[LC]; mFront[RD] = temp[LU];
+	}
+	
+	public void Front()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(F), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mFront[i];
+		}
+		Rotate(mFront, temp);
+		
+		//R
+		mRight[LU] = temp[LU]; mRight[LC] = temp[CU]; mRight[LD] = temp[RU];
+		//D
+		mDown[RU] = temp[RU]; mDown[CU] = temp[RC]; mDown[LU] = temp[RD];
+		//L
+		mLeft[RD] = temp[RD]; mLeft[RC] = temp[CD]; mLeft[RU] = temp[LD];
+		//U
+		mUp[LD] = temp[LD]; mUp[CD] = temp[LC]; mUp[RD] = temp[LU];
+	}
+	
+	public void Back()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(B), 0,10);
+		
+		Cube[] temp = new Cube[9];
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mBack[i];
+		}
+		Rotate(mBack, temp);
+		
+		//L
+		mLeft[LU] = temp[LU]; mLeft[LC] = temp[CU]; mLeft[LD] = temp[RU];
+		//D
+		mDown[LD] = temp[RU]; mDown[CD] = temp[RC]; mDown[RD] = temp[RD];
+		//R
+		mRight[RD] = temp[RD]; mRight[RC] = temp[CD]; mRight[RU] = temp[LD];
+		//U
+		mUp[RU] = temp[LD]; mUp[CU] = temp[LC]; mUp[LU] = temp[LU];
 	}
 
 	public boolean isMoving()
@@ -330,6 +397,27 @@ public class RubiksCube extends BranchGroup
 						for(int i = 0;i<mUp.length;i++)
 						{
 								mUp[i].rotateY(-Math.PI/18);
+						}
+						break;
+						
+					case RubiksCube.D:
+						for(int i = 0;i<mDown.length;i++)
+						{
+								mDown[i].rotateY(Math.PI/18);
+						}
+						break;
+					
+					case RubiksCube.F:
+						for(int i = 0;i<mFront.length;i++)
+						{
+								mFront[i].rotateZ(-Math.PI/18);
+						}
+						break;
+						
+					case RubiksCube.B:
+						for(int i = 0;i<mBack.length;i++)
+						{
+								mBack[i].rotateZ(Math.PI/18);
 						}
 						break;
 
