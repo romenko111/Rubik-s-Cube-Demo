@@ -3,7 +3,11 @@ import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.media.j3d.Alpha;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.Background;
@@ -11,6 +15,7 @@ import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.DirectionalLight;
+import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Interpolator;
 import javax.media.j3d.Light;
 import javax.media.j3d.Material;
@@ -34,10 +39,6 @@ import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.IO;
 public class MainFrame extends JFrame implements KeyListener
 {
 	private RubiksCube mRubiksCube;
-	private Cube mCube;
-	private RotationInterpolator interpolator;
-	private Alpha alpha;
-	private double angle;
 
 	public static void main(String[] args)
 	{
@@ -113,6 +114,14 @@ public class MainFrame extends JFrame implements KeyListener
 				
 			case KeyEvent.VK_B:
 				mRubiksCube.Back();
+				break;
+				
+			case KeyEvent.VK_M:
+				mRubiksCube.Middle();
+				break;
+				
+			case KeyEvent.VK_S:
+				mRubiksCube.Standing();
 				break;
 
 			default:
