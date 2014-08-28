@@ -42,6 +42,7 @@ public class MainFrame extends JFrame implements KeyListener
 
 	public static void main(String[] args)
 	{
+		System.out.println("LD Library Path:" + System.getProperty("java.library.path"));
 		new MainFrame();
 	}
 
@@ -107,21 +108,25 @@ public class MainFrame extends JFrame implements KeyListener
 			case KeyEvent.VK_L:
 				mRubiksCube.Left();
 				break;
-				
+
 			case KeyEvent.VK_D:
 				mRubiksCube.Down();
 				break;
-				
+
 			case KeyEvent.VK_B:
 				mRubiksCube.Back();
 				break;
-				
+
 			case KeyEvent.VK_M:
 				mRubiksCube.Middle();
 				break;
-				
+
 			case KeyEvent.VK_S:
 				mRubiksCube.Standing();
+				break;
+
+			case KeyEvent.VK_E:
+				mRubiksCube.Equatorial();
 				break;
 
 			default:
