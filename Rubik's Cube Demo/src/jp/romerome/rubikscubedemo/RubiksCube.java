@@ -9,15 +9,19 @@ import com.sun.swing.internal.plaf.metal.resources.metal;
 public class RubiksCube extends BranchGroup
 {
 
-	public static final int R =0;
-	public static final int L =1;
-	public static final int U =2;
-	public static final int D =3;
+	public static final int R = 0;
+	public static final int L = 1;
+	public static final int U = 2;
+	public static final int D = 3;
 	public static final int F = 4;
-	public static final int B =5;
+	public static final int B = 5;
 	public static final int M = 6;
 	public static final int S = 7;
 	public static final int E = 8;
+	public static final int Rev = 0b10000000;
+	public static final int WR = 9;
+	public static final int WU = 10;
+	public static final int WF = 11;
 	public static final int LU = 0;
 	public static final int CU = 1;
 	public static final int RU = 2;
@@ -225,6 +229,12 @@ public class RubiksCube extends BranchGroup
 		cubes[LU] = temp[LD]; cubes[LD] = temp[RD]; cubes[RD] = temp[RU]; cubes[RU] = temp[LU];
 	}
 
+	private void RotateRev(Cube[] cubes, Cube[] temp)
+	{
+		cubes[CU] = temp[RC]; cubes[LC] = temp[CU]; cubes[CD] = temp[LC]; cubes[RC] = temp[CD];
+		cubes[LU] = temp[RU]; cubes[LD] = temp[LU]; cubes[RD] = temp[LD]; cubes[RU] = temp[RD];
+	}
+
 	public void Right()
 	{
 		if(isMoving) return;
@@ -238,13 +248,39 @@ public class RubiksCube extends BranchGroup
 		Rotate(mRight, temp);
 
 		//B
-		mBack[LU] = temp[LU]; mBack[LC] = temp[CU]; mBack[LD] = temp[RU];
+		mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
 		//U
-		mUp[RU] = temp[LU]; mUp[RC] = temp[LC]; mUp[RD] = temp[LD];
+		mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
 		//F
-		mFront[RU] = temp[LD]; mFront[RC] = temp[CD]; mFront[RD] = temp[RD];
+		mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
 		//D
-		mDown[RU] = temp[RD]; mDown[RC] = temp[RC]; mDown[RD] = temp[RU];
+		mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
+		//S
+		mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
+		//E
+		mEquatorial[RU] = mRight[LC]; mEquatorial[RC] = mRight[CC]; mEquatorial[RD]=mRight[RC];
+	}
+
+	public void RightRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(R | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mRight[i];
+		}
+		RotateRev(mRight, temp);
+
+		//B
+		mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
+		//U
+		mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
+		//F
+		mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
+		//D
+		mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
 		//S
 		mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
 		//E
@@ -264,13 +300,39 @@ public class RubiksCube extends BranchGroup
 		Rotate(mLeft, temp);
 
 		//B
-		mBack[RU] = temp[LD]; mBack[RC] = temp[CD]; mBack[RD] = temp[RD];
+		mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
 		//U
-		mUp[LU] = temp[LD]; mUp[LC] = temp[LC]; mUp[LD] = temp[LU];
+		mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
 		//F
-		mFront[LU] = temp[LU]; mFront[LC] = temp[CU]; mFront[LD] = temp[RU];
+		mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
 		//D
-		mDown[LU] = temp[RU]; mDown[LC] = temp[RC]; mDown[LD] = temp[RD];
+		mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
+		//S
+		mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
+		//E
+		mEquatorial[LD] = mLeft[LC]; mEquatorial[LC] = mLeft[CC]; mEquatorial[LU] = mLeft[RC];
+	}
+
+	public void LeftRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(L | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mLeft[i];
+		}
+		RotateRev(mLeft, temp);
+
+		//B
+		mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
+		//U
+		mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
+		//F
+		mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
+		//D
+		mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
 		//S
 		mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
 		//E
@@ -290,13 +352,39 @@ public class RubiksCube extends BranchGroup
 		Rotate(mUp, temp);
 
 		//B
-		mBack[LU] = temp[LU]; mBack[CU] = temp[LC]; mBack[RU] = temp[LD];
+		mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
 		//L
-		mLeft[LU] = temp[LD]; mLeft[CU] = temp[CD]; mLeft[RU] = temp[RD];
+		mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
 		//F
-		mFront[LU] = temp[RD]; mFront[CU] = temp[RC]; mFront[RU] = temp[RU];
+		mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
 		//R
-		mRight[LU] = temp[RU]; mRight[CU] = temp[CU]; mRight[RU] = temp[LU];
+		mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
+		//M
+		mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
+		//S
+		mStanding[LU] = mUp[LC]; mStanding[CU] = mUp[CC]; mStanding[RU] = mUp[RC];
+	}
+
+	public void UpRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(U | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mUp[i];
+		}
+		RotateRev(mUp, temp);
+
+		//B
+		mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
+		//L
+		mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
+		//F
+		mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
+		//R
+		mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
 		//M
 		mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
 		//S
@@ -316,17 +404,45 @@ public class RubiksCube extends BranchGroup
 		Rotate(mDown, temp);
 
 		//R
-		mRight[LD] = temp[LU]; mRight[CD] = temp[CU]; mRight[RD] = temp[RU];
+		mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
 		//B
-		mBack[LD] = temp[RU]; mBack[CD] = temp[RC]; mBack[RD] = temp[RD];
+		mBack[LD] = mDown[CD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[CU];
 		//L
-		mLeft[LD] = temp[RD]; mLeft[CD] = temp[CD]; mLeft[RD] = temp[LD];
+		mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
 		//F
-		mFront[LD] = temp[LD]; mFront[CD] = temp[LC]; mFront[RD] = temp[LU];
+		mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
 		//M
 		mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
 		//S
 		mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+	}
+
+	public void DownRev()
+	{
+		{
+			if(isMoving) return;
+			Timer timer = new Timer();
+			timer.schedule(new MyTimerTask(D | Rev), 0,10);
+
+			for(int i=0;i<temp.length;i++)
+			{
+				temp[i] = mDown[i];
+			}
+			RotateRev(mDown, temp);
+
+			//R
+			mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
+			//B
+			mBack[LD] = mDown[CD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[CU];
+			//L
+			mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
+			//F
+			mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
+			//M
+			mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
+			//S
+			mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+		}
 	}
 
 	public void Front()
@@ -342,13 +458,39 @@ public class RubiksCube extends BranchGroup
 		Rotate(mFront, temp);
 
 		//R
-		mRight[LU] = temp[LU]; mRight[LC] = temp[CU]; mRight[LD] = temp[RU];
+		mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
 		//D
-		mDown[RU] = temp[RU]; mDown[CU] = temp[RC]; mDown[LU] = temp[RD];
+		mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
 		//L
-		mLeft[RD] = temp[RD]; mLeft[RC] = temp[CD]; mLeft[RU] = temp[LD];
+		mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
 		//U
-		mUp[LD] = temp[LD]; mUp[CD] = temp[LC]; mUp[RD] = temp[LU];
+		mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
+		//M
+		mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
+		//E
+		mEquatorial[LU] = mFront[LC]; mEquatorial[CU] = mFront[CC]; mEquatorial[RU] = mFront[RC];
+	}
+
+	public void FrontRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(F | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mFront[i];
+		}
+		RotateRev(mFront, temp);
+
+		//R
+		mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
+		//D
+		mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
+		//L
+		mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
+		//U
+		mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
 		//M
 		mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
 		//E
@@ -368,13 +510,39 @@ public class RubiksCube extends BranchGroup
 		Rotate(mBack, temp);
 
 		//L
-		mLeft[LU] = temp[LU]; mLeft[LC] = temp[CU]; mLeft[LD] = temp[RU];
+		mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
 		//D
-		mDown[LD] = temp[RU]; mDown[CD] = temp[RC]; mDown[RD] = temp[RD];
+		mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
 		//R
-		mRight[RD] = temp[RD]; mRight[RC] = temp[CD]; mRight[RU] = temp[LD];
+		mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
 		//U
-		mUp[RU] = temp[LD]; mUp[CU] = temp[LC]; mUp[LU] = temp[LU];
+		mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
+		//M
+		mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
+		//E
+		mEquatorial[LD] = mBack[RC]; mEquatorial[CD] = mBack[CC]; mEquatorial[RD] = mBack[LC];
+	}
+
+	public void BackRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(B | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mBack[i];
+		}
+		RotateRev(mBack, temp);
+
+		//L
+		mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
+		//D
+		mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
+		//R
+		mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
+		//U
+		mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
 		//M
 		mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
 		//E
@@ -392,6 +560,28 @@ public class RubiksCube extends BranchGroup
 			temp[i] = mMiddle[i];
 		}
 		Rotate(mMiddle, temp);
+
+		mUp[CU] = mBack[CU] = mMiddle[LU];
+		mUp[CC] = mStanding[CU] = mMiddle[CU];
+		mUp[CD] = mFront[CU] = mMiddle[RU];
+		mBack[CC] = mEquatorial[CD] = mMiddle[LC];
+		mFront[CC] = mEquatorial[CU] = mMiddle[RC];
+		mDown[CD] = mBack[CD] = mMiddle[LD];
+		mDown[CC] = mStanding[CD] = mMiddle[CD];
+		mDown[CU] = mFront[CD] = mMiddle[RD];
+	}
+
+	public void MiddleRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(M | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mMiddle[i];
+		}
+		RotateRev(mMiddle, temp);
 
 		mUp[CU] = mBack[CU] = mMiddle[LU];
 		mUp[CC] = mStanding[CU] = mMiddle[CU];
@@ -425,6 +615,28 @@ public class RubiksCube extends BranchGroup
 		mRight[CD] = mDown[RC] = mStanding[RD];
 	}
 
+	public void StandingRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(S | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mStanding[i];
+		}
+		RotateRev(mStanding, temp);
+
+		mUp[LC] = mLeft[CU] = mStanding[LU];
+		mUp[CC] = mMiddle[CU] = mStanding[CU];
+		mUp[RC] = mRight[CU] = mStanding[RU];
+		mLeft[CC] = mEquatorial[LC] = mStanding[LC];
+		mRight[CC] = mEquatorial[RC] = mStanding[RC];
+		mLeft[CD] = mDown[LC] = mStanding[LD];
+		mDown[CC] = mMiddle[CD] = mStanding[CD];
+		mRight[CD] = mDown[RC] = mStanding[RD];
+	}
+
 	public void Equatorial()
 	{
 		if(isMoving) return;
@@ -436,6 +648,28 @@ public class RubiksCube extends BranchGroup
 			temp[i] = mEquatorial[i];
 		}
 		Rotate(mEquatorial, temp);
+
+		mLeft[LC] = mBack[RC] = mEquatorial[LD];
+		mBack[CC] = mMiddle[LC] = mEquatorial[CD];
+		mRight[RC] = mBack[LC] = mEquatorial[RD];
+		mLeft[CC] = mStanding[LC] = mEquatorial[LC];
+		mRight[CC] = mStanding[RC] = mEquatorial[RC];
+		mLeft[RC] = mFront[LC] = mEquatorial[LU];
+		mFront[CC] = mMiddle[RC] = mEquatorial[CU];
+		mRight[LC] = mFront[RC] = mEquatorial[RU];
+	}
+
+	public void EquatorialRev()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(E | Rev), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mEquatorial[i];
+		}
+		RotateRev(mEquatorial, temp);
 
 		mLeft[LC] = mBack[RC] = mEquatorial[LD];
 		mBack[CC] = mMiddle[LC] = mEquatorial[CD];
@@ -474,76 +708,154 @@ public class RubiksCube extends BranchGroup
 			}
 			else
 			{
-				switch (men)
+				if((men & Rev) == Rev)
 				{
-					case RubiksCube.R:
-						for(int i = 0;i<mRight.length;i++)
-						{
-							mRight[i].rotateX(-Math.PI/18);
-						}
-						break;
+					int m = men & ~Rev;
+					switch (m)
+					{
+						case RubiksCube.R:
+							for(int i = 0;i<mRight.length;i++)
+							{
+								mRight[i].rotateX(Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.L:
-						for(int i = 0;i<mLeft.length;i++)
-						{
-							mLeft[i].rotateX(Math.PI/18);
-						}
-						break;
+						case RubiksCube.L:
+							for(int i = 0;i<mLeft.length;i++)
+							{
+								mLeft[i].rotateX(-Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.U:
-						for(int i = 0;i<mUp.length;i++)
-						{
-							mUp[i].rotateY(-Math.PI/18);
-						}
-						break;
+						case RubiksCube.U:
+							for(int i = 0;i<mUp.length;i++)
+							{
+								mUp[i].rotateY(Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.D:
-						for(int i = 0;i<mDown.length;i++)
-						{
-							mDown[i].rotateY(Math.PI/18);
-						}
-						break;
+						case RubiksCube.D:
+							for(int i = 0;i<mDown.length;i++)
+							{
+								mDown[i].rotateY(-Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.F:
-						for(int i = 0;i<mFront.length;i++)
-						{
-							mFront[i].rotateZ(-Math.PI/18);
-						}
-						break;
+						case RubiksCube.F:
+							for(int i = 0;i<mFront.length;i++)
+							{
+								mFront[i].rotateZ(Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.B:
-						for(int i = 0;i<mBack.length;i++)
-						{
-							mBack[i].rotateZ(Math.PI/18);
-						}
-						break;
+						case RubiksCube.B:
+							for(int i = 0;i<mBack.length;i++)
+							{
+								mBack[i].rotateZ(-Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.M:
-						for(int i = 0;i<mMiddle.length;i++)
-						{
-							if(mMiddle[i] != null)
-								mMiddle[i].rotateX(Math.PI/18);
-						}
-						break;
+						case RubiksCube.M:
+							for(int i = 0;i<mMiddle.length;i++)
+							{
+								if(mMiddle[i] != null)
+									mMiddle[i].rotateX(-Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.S:
-						for(int i = 0;i<mStanding.length;i++)
-						{
-							if(mStanding[i] != null)
-								mStanding[i].rotateZ(-Math.PI/18);
-						}
-						break;
+						case RubiksCube.S:
+							for(int i = 0;i<mStanding.length;i++)
+							{
+								if(mStanding[i] != null)
+									mStanding[i].rotateZ(Math.PI/18);
+							}
+							break;
 
-					case RubiksCube.E:
-						for(int i = 0;i<mEquatorial.length;i++)
-						{
-							if(mEquatorial[i] != null)
-								mEquatorial[i].rotateY(Math.PI/18);
-						}
-						break;
+						case RubiksCube.E:
+							for(int i = 0;i<mEquatorial.length;i++)
+							{
+								if(mEquatorial[i] != null)
+									mEquatorial[i].rotateY(-Math.PI/18);
+							}
+							break;
 
-					default:
-						break;
+						default:
+							break;
+					}
+				}
+				else
+				{
+					switch (men)
+					{
+						case RubiksCube.R:
+							for(int i = 0;i<mRight.length;i++)
+							{
+								mRight[i].rotateX(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.L:
+							for(int i = 0;i<mLeft.length;i++)
+							{
+								mLeft[i].rotateX(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.U:
+							for(int i = 0;i<mUp.length;i++)
+							{
+								mUp[i].rotateY(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.D:
+							for(int i = 0;i<mDown.length;i++)
+							{
+								mDown[i].rotateY(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.F:
+							for(int i = 0;i<mFront.length;i++)
+							{
+								mFront[i].rotateZ(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.B:
+							for(int i = 0;i<mBack.length;i++)
+							{
+								mBack[i].rotateZ(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.M:
+							for(int i = 0;i<mMiddle.length;i++)
+							{
+								if(mMiddle[i] != null)
+									mMiddle[i].rotateX(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.S:
+							for(int i = 0;i<mStanding.length;i++)
+							{
+								if(mStanding[i] != null)
+									mStanding[i].rotateZ(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.E:
+							for(int i = 0;i<mEquatorial.length;i++)
+							{
+								if(mEquatorial[i] != null)
+									mEquatorial[i].rotateY(Math.PI/18);
+							}
+							break;
+
+						default:
+							break;
+					}
 				}
 
 			}

@@ -1,6 +1,7 @@
 package jp.romerome.rubikscubedemo;
 import java.awt.Color;
 import java.awt.GraphicsConfiguration;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -89,48 +90,95 @@ public class MainFrame extends JFrame implements KeyListener
 	public void keyPressed(KeyEvent e)
 	{
 		System.out.println("keypressed");
-		switch (e.getKeyCode())
+		if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
 		{
-			case KeyEvent.VK_R:
-				if(!mRubiksCube.isMoving())
-				mRubiksCube.Right();
+			switch (e.getKeyCode())
+			{
+				case KeyEvent.VK_R:
+					if(!mRubiksCube.isMoving())
+					mRubiksCube.RightRev();
+					break;
 
-				break;
+				case KeyEvent.VK_U:
+					mRubiksCube.UpRev();
+					break;
 
-			case KeyEvent.VK_U:
-				mRubiksCube.Up();
-				break;
+				case KeyEvent.VK_F:
+					mRubiksCube.FrontRev();
+					break;
 
-			case KeyEvent.VK_F:
-				mRubiksCube.Front();
-				break;
+				case KeyEvent.VK_L:
+					mRubiksCube.LeftRev();
+					break;
 
-			case KeyEvent.VK_L:
-				mRubiksCube.Left();
-				break;
+				case KeyEvent.VK_D:
+					mRubiksCube.DownRev();
+					break;
 
-			case KeyEvent.VK_D:
-				mRubiksCube.Down();
-				break;
+				case KeyEvent.VK_B:
+					mRubiksCube.BackRev();
+					break;
 
-			case KeyEvent.VK_B:
-				mRubiksCube.Back();
-				break;
+				case KeyEvent.VK_M:
+					mRubiksCube.MiddleRev();
+					break;
 
-			case KeyEvent.VK_M:
-				mRubiksCube.Middle();
-				break;
+				case KeyEvent.VK_S:
+					mRubiksCube.StandingRev();
+					break;
 
-			case KeyEvent.VK_S:
-				mRubiksCube.Standing();
-				break;
+				case KeyEvent.VK_E:
+					mRubiksCube.EquatorialRev();
+					break;
 
-			case KeyEvent.VK_E:
-				mRubiksCube.Equatorial();
-				break;
+				default:
+					break;
+			}
+		}
+		else
+		{
+			switch (e.getKeyCode())
+			{
+				case KeyEvent.VK_R:
+					if(!mRubiksCube.isMoving())
+					mRubiksCube.Right();
+					break;
 
-			default:
-				break;
+				case KeyEvent.VK_U:
+					mRubiksCube.Up();
+					break;
+
+				case KeyEvent.VK_F:
+					mRubiksCube.Front();
+					break;
+
+				case KeyEvent.VK_L:
+					mRubiksCube.Left();
+					break;
+
+				case KeyEvent.VK_D:
+					mRubiksCube.Down();
+					break;
+
+				case KeyEvent.VK_B:
+					mRubiksCube.Back();
+					break;
+
+				case KeyEvent.VK_M:
+					mRubiksCube.Middle();
+					break;
+
+				case KeyEvent.VK_S:
+					mRubiksCube.Standing();
+					break;
+
+				case KeyEvent.VK_E:
+					mRubiksCube.Equatorial();
+					break;
+
+				default:
+					break;
+			}
 		}
 
 	}
