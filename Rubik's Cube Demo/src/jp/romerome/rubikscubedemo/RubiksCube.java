@@ -20,8 +20,11 @@ public class RubiksCube extends BranchGroup
 	public static final int E = 8;
 	public static final int Rev = 0b10000000;
 	public static final int WR = 9;
-	public static final int WU = 10;
-	public static final int WF = 11;
+	public static final int WL = 10;
+	public static final int WU = 11;
+	public static final int WD = 12;
+	public static final int WF = 13;
+	public static final int WB = 14;
 	public static final int LU = 0;
 	public static final int CU = 1;
 	public static final int RU = 2;
@@ -406,7 +409,7 @@ public class RubiksCube extends BranchGroup
 		//R
 		mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
 		//B
-		mBack[LD] = mDown[CD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[CU];
+		mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
 		//L
 		mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
 		//F
@@ -433,7 +436,7 @@ public class RubiksCube extends BranchGroup
 			//R
 			mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
 			//B
-			mBack[LD] = mDown[CD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[CU];
+			mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
 			//L
 			mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
 			//F
@@ -681,6 +684,349 @@ public class RubiksCube extends BranchGroup
 		mRight[LC] = mFront[RC] = mEquatorial[RU];
 	}
 
+	public void WholeRight()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WR), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mRight[i];
+		}
+		Rotate(mRight, temp);
+		//B
+		mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
+		//U
+		mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
+		//F
+		mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
+		//D
+		mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
+		//S
+		mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
+		//E
+		mEquatorial[RU] = mRight[LC]; mEquatorial[RC] = mRight[CC]; mEquatorial[RD]=mRight[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mLeft[i];
+		}
+		RotateRev(mLeft, temp);
+
+		//B
+		mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
+		//U
+		mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
+		//F
+		mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
+		//D
+		mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
+		//S
+		mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
+		//E
+		mEquatorial[LD] = mLeft[LC]; mEquatorial[LC] = mLeft[CC]; mEquatorial[LU] = mLeft[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mMiddle[i];
+		}
+		RotateRev(mMiddle, temp);
+		mUp[CU] = mBack[CU] = mMiddle[LU];
+		mUp[CC] = mStanding[CU] = mMiddle[CU];
+		mUp[CD] = mFront[CU] = mMiddle[RU];
+		mBack[CC] = mEquatorial[CD] = mMiddle[LC];
+		mFront[CC] = mEquatorial[CU] = mMiddle[RC];
+		mDown[CD] = mBack[CD] = mMiddle[LD];
+		mDown[CC] = mStanding[CD] = mMiddle[CD];
+		mDown[CU] = mFront[CD] = mMiddle[RD];
+	}
+
+	public void WholeLeft()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WL), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mRight[i];
+		}
+		RotateRev(mRight, temp);
+		//B
+		mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
+		//U
+		mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
+		//F
+		mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
+		//D
+		mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
+		//S
+		mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
+		//E
+		mEquatorial[RU] = mRight[LC]; mEquatorial[RC] = mRight[CC]; mEquatorial[RD]=mRight[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mLeft[i];
+		}
+		Rotate(mLeft, temp);
+		//B
+		mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
+		//U
+		mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
+		//F
+		mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
+		//D
+		mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
+		//S
+		mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
+		//E
+		mEquatorial[LD] = mLeft[LC]; mEquatorial[LC] = mLeft[CC]; mEquatorial[LU] = mLeft[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mMiddle[i];
+		}
+		Rotate(mMiddle, temp);
+		mUp[CU] = mBack[CU] = mMiddle[LU];
+		mUp[CC] = mStanding[CU] = mMiddle[CU];
+		mUp[CD] = mFront[CU] = mMiddle[RU];
+		mBack[CC] = mEquatorial[CD] = mMiddle[LC];
+		mFront[CC] = mEquatorial[CU] = mMiddle[RC];
+		mDown[CD] = mBack[CD] = mMiddle[LD];
+		mDown[CC] = mStanding[CD] = mMiddle[CD];
+		mDown[CU] = mFront[CD] = mMiddle[RD];
+	}
+
+	public void WholeUp()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WU), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mUp[i];
+		}
+		Rotate(mUp, temp);
+		//B
+		mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
+		//L
+		mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
+		//F
+		mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
+		//R
+		mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
+		//M
+		mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
+		//S
+		mStanding[LU] = mUp[LC]; mStanding[CU] = mUp[CC]; mStanding[RU] = mUp[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mDown[i];
+		}
+		RotateRev(mDown, temp);
+		//R
+		mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
+		//B
+		mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
+		//L
+		mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
+		//F
+		mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
+		//M
+		mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
+		//S
+		mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mEquatorial[i];
+		}
+		RotateRev(mEquatorial, temp);
+		mLeft[LC] = mBack[RC] = mEquatorial[LD];
+		mBack[CC] = mMiddle[LC] = mEquatorial[CD];
+		mRight[RC] = mBack[LC] = mEquatorial[RD];
+		mLeft[CC] = mStanding[LC] = mEquatorial[LC];
+		mRight[CC] = mStanding[RC] = mEquatorial[RC];
+		mLeft[RC] = mFront[LC] = mEquatorial[LU];
+		mFront[CC] = mMiddle[RC] = mEquatorial[CU];
+		mRight[LC] = mFront[RC] = mEquatorial[RU];
+	}
+
+	public void WholeDown()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WD), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mUp[i];
+		}
+		RotateRev(mUp, temp);
+		//B
+		mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
+		//L
+		mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
+		//F
+		mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
+		//R
+		mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
+		//M
+		mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
+		//S
+		mStanding[LU] = mUp[LC]; mStanding[CU] = mUp[CC]; mStanding[RU] = mUp[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mDown[i];
+		}
+		Rotate(mDown, temp);
+		//R
+		mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
+		//B
+		mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
+		//L
+		mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
+		//F
+		mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
+		//M
+		mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
+		//S
+		mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mEquatorial[i];
+		}
+		Rotate(mEquatorial, temp);
+		mLeft[LC] = mBack[RC] = mEquatorial[LD];
+		mBack[CC] = mMiddle[LC] = mEquatorial[CD];
+		mRight[RC] = mBack[LC] = mEquatorial[RD];
+		mLeft[CC] = mStanding[LC] = mEquatorial[LC];
+		mRight[CC] = mStanding[RC] = mEquatorial[RC];
+		mLeft[RC] = mFront[LC] = mEquatorial[LU];
+		mFront[CC] = mMiddle[RC] = mEquatorial[CU];
+		mRight[LC] = mFront[RC] = mEquatorial[RU];
+	}
+
+	public void WholeFront()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WF), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mFront[i];
+		}
+		Rotate(mFront, temp);
+		//R
+		mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
+		//D
+		mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
+		//L
+		mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
+		//U
+		mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
+		//M
+		mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
+		//E
+		mEquatorial[LU] = mFront[LC]; mEquatorial[CU] = mFront[CC]; mEquatorial[RU] = mFront[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mBack[i];
+		}
+		RotateRev(mBack, temp);
+		//L
+		mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
+		//D
+		mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
+		//R
+		mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
+		//U
+		mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
+		//M
+		mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
+		//E
+		mEquatorial[LD] = mBack[RC]; mEquatorial[CD] = mBack[CC]; mEquatorial[RD] = mBack[LC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mStanding[i];
+		}
+		Rotate(mStanding, temp);
+		mUp[LC] = mLeft[CU] = mStanding[LU];
+		mUp[CC] = mMiddle[CU] = mStanding[CU];
+		mUp[RC] = mRight[CU] = mStanding[RU];
+		mLeft[CC] = mEquatorial[LC] = mStanding[LC];
+		mRight[CC] = mEquatorial[RC] = mStanding[RC];
+		mLeft[CD] = mDown[LC] = mStanding[LD];
+		mDown[CC] = mMiddle[CD] = mStanding[CD];
+		mRight[CD] = mDown[RC] = mStanding[RD];
+	}
+
+	public void WholeBack()
+	{
+		if(isMoving) return;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(WB), 0,10);
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mFront[i];
+		}
+		RotateRev(mFront, temp);
+		//R
+		mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
+		//D
+		mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
+		//L
+		mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
+		//U
+		mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
+		//M
+		mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
+		//E
+		mEquatorial[LU] = mFront[LC]; mEquatorial[CU] = mFront[CC]; mEquatorial[RU] = mFront[RC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mBack[i];
+		}
+		Rotate(mBack, temp);
+		//L
+		mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
+		//D
+		mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
+		//R
+		mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
+		//U
+		mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
+		//M
+		mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
+		//E
+		mEquatorial[LD] = mBack[RC]; mEquatorial[CD] = mBack[CC]; mEquatorial[RD] = mBack[LC];
+
+		for(int i=0;i<temp.length;i++)
+		{
+			temp[i] = mStanding[i];
+		}
+		RotateRev(mStanding, temp);
+		mUp[LC] = mLeft[CU] = mStanding[LU];
+		mUp[CC] = mMiddle[CU] = mStanding[CU];
+		mUp[RC] = mRight[CU] = mStanding[RU];
+		mLeft[CC] = mEquatorial[LC] = mStanding[LC];
+		mRight[CC] = mEquatorial[RC] = mStanding[RC];
+		mLeft[CD] = mDown[LC] = mStanding[LD];
+		mDown[CC] = mMiddle[CD] = mStanding[CD];
+		mRight[CD] = mDown[RC] = mStanding[RD];
+	}
+
 	public boolean isMoving()
 	{
 		return isMoving;
@@ -850,6 +1196,66 @@ public class RubiksCube extends BranchGroup
 							{
 								if(mEquatorial[i] != null)
 									mEquatorial[i].rotateY(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WR:
+							for(int i = 0;i<mRight.length;i++)
+							{
+								mRight[i].rotateX(-Math.PI/18);
+								mLeft[i].rotateX(-Math.PI/18);
+								if(mMiddle[i] != null)
+									mMiddle[i].rotateX(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WL:
+							for(int i = 0;i<mRight.length;i++)
+							{
+								mRight[i].rotateX(Math.PI/18);
+								mLeft[i].rotateX(Math.PI/18);
+								if(mMiddle[i] != null)
+									mMiddle[i].rotateX(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WU:
+							for(int i = 0;i<mUp.length;i++)
+							{
+								mUp[i].rotateY(-Math.PI/18);
+								mDown[i].rotateY(-Math.PI/18);
+								if(mEquatorial[i] != null)
+									mEquatorial[i].rotateY(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WD:
+							for(int i = 0;i<mUp.length;i++)
+							{
+								mUp[i].rotateY(Math.PI/18);
+								mDown[i].rotateY(Math.PI/18);
+								if(mEquatorial[i] != null)
+									mEquatorial[i].rotateY(Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WF:
+							for(int i = 0;i<mFront.length;i++)
+							{
+								mFront[i].rotateZ(-Math.PI/18);
+								mBack[i].rotateZ(-Math.PI/18);
+								if(mStanding[i] != null)
+									mStanding[i].rotateZ(-Math.PI/18);
+							}
+							break;
+
+						case RubiksCube.WB:
+							for(int i = 0;i<mFront.length;i++)
+							{
+								mFront[i].rotateZ(Math.PI/18);
+								mBack[i].rotateZ(Math.PI/18);
+								if(mStanding[i] != null)
+									mStanding[i].rotateZ(Math.PI/18);
 							}
 							break;
 

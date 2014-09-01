@@ -1,41 +1,18 @@
 package jp.romerome.rubikscubedemo;
-import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.media.j3d.Alpha;
-import javax.media.j3d.Appearance;
-import javax.media.j3d.Background;
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
-import javax.media.j3d.DirectionalLight;
-import javax.media.j3d.ImageComponent2D;
-import javax.media.j3d.Interpolator;
-import javax.media.j3d.Light;
-import javax.media.j3d.Material;
-import javax.media.j3d.RotationInterpolator;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.swing.JFrame;
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
-
 import jp.romerome.rubikscubedemo.RubiksCube.RubikColor;
-
-import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils.IO;
 
 public class MainFrame extends JFrame implements KeyListener
 {
@@ -90,7 +67,40 @@ public class MainFrame extends JFrame implements KeyListener
 	public void keyPressed(KeyEvent e)
 	{
 		System.out.println("keypressed");
-		if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
+		if((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)
+		{
+			switch (e.getKeyCode())
+			{
+				case KeyEvent.VK_R:
+					if(!mRubiksCube.isMoving())
+					mRubiksCube.WholeRight();
+					break;
+
+				case KeyEvent.VK_U:
+					mRubiksCube.WholeUp();
+					break;
+
+				case KeyEvent.VK_F:
+					mRubiksCube.WholeFront();
+					break;
+
+				case KeyEvent.VK_L:
+					mRubiksCube.WholeLeft();
+					break;
+
+				case KeyEvent.VK_D:
+					mRubiksCube.WholeDown();
+					break;
+
+				case KeyEvent.VK_B:
+					mRubiksCube.WholeBack();
+					break;
+
+				default:
+					break;
+			}
+		}
+		else if ((e.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0)
 		{
 			switch (e.getKeyCode())
 			{
