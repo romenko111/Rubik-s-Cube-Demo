@@ -4,13 +4,16 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.Canvas3D;
+import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.swing.JFrame;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 import jp.romerome.rubikscubedemo.RubiksCube.RubikColor;
+
 import com.sun.j3d.utils.universe.SimpleUniverse;
 import com.sun.j3d.utils.universe.ViewingPlatform;
 
@@ -55,6 +58,7 @@ public class MainFrame extends JFrame implements KeyListener
 
         RubikColor[] colors = {RubikColor.RED,RubikColor.ORANGE,RubikColor.WHITE,RubikColor.BLUE,RubikColor.GREEN,RubikColor.YELLOW};
 		mRubiksCube  = new RubiksCube(this);
+
 		universe.addBranchGraph(mRubiksCube);
 
 		// JFrame を表示
@@ -66,7 +70,7 @@ public class MainFrame extends JFrame implements KeyListener
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		System.out.println("keypressed");
+		//System.out.println("keypressed");
 		if((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) != 0)
 		{
 			switch (e.getKeyCode())
@@ -186,6 +190,26 @@ public class MainFrame extends JFrame implements KeyListener
 					mRubiksCube.Equatorial();
 					break;
 
+				case KeyEvent.VK_RIGHT:
+					mRubiksCube.WholeDown();
+					break;
+
+				case KeyEvent.VK_LEFT:
+					mRubiksCube.WholeUp();
+					break;
+
+				case KeyEvent.VK_UP:
+					mRubiksCube.WholeRight();
+					break;
+
+				case KeyEvent.VK_DOWN:
+					mRubiksCube.WholeLeft();
+					break;
+
+				case KeyEvent.VK_ENTER:
+					mRubiksCube.Shuffle();
+					break;
+
 				default:
 					break;
 			}
@@ -196,12 +220,12 @@ public class MainFrame extends JFrame implements KeyListener
 	@Override
 	public void keyReleased(KeyEvent e)
 	{
-		System.out.println("keyreleased");
+		//System.out.println("keyreleased");
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e)
 	{
-		System.out.println("keytyped");
+		//System.out.println("keytyped");
 	}
 }

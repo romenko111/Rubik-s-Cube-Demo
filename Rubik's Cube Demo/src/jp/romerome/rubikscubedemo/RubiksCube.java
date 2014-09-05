@@ -1,12 +1,15 @@
 package jp.romerome.rubikscubedemo;
 import java.awt.Component;
+import java.util.EventListener;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.media.j3d.BranchGroup;
 
 import com.sun.swing.internal.plaf.metal.resources.metal;
 
-public class RubiksCube extends BranchGroup
+public class RubiksCube extends BranchGroup implements FinishListener
 {
 
 	public static final int R = 0;
@@ -48,6 +51,8 @@ public class RubiksCube extends BranchGroup
 	private Cube[] temp;
 	private double mR = 0.5;
 	private boolean isMoving;
+	private int [] mScramble;
+	private int i;
 
 	public RubiksCube(Component component)
 	{
@@ -1032,14 +1037,405 @@ public class RubiksCube extends BranchGroup
 		return isMoving;
 	}
 
+	public void Shuffle()
+	{
+		if(isMoving) return;
+		mScramble = Scranble();
+		i = 0;
+		Timer timer = new Timer();
+		timer.schedule(new MyTimerTask(mScramble[i],this), 0,10);
+	}
+
+	private int[] Scranble()
+	{
+		int[] scranble = new int[30];
+
+		Random rnd = new Random();
+		Random rnd2 = new Random();
+		for(int i=0;i<scranble.length;i++)
+		{
+			scranble[i] = rnd.nextInt(9);
+			int n = rnd2.nextInt(2);
+			if(n == 1)
+			{
+				scranble[i] = scranble[i] | Rev;
+			}
+		}
+		return scranble;
+	}
+
+	@Override
+	public void finish(int men)
+	{
+		Exchange(men);
+		i++;
+		if(i < mScramble.length)
+		{
+			Timer timer = new Timer();
+			timer.schedule(new MyTimerTask(mScramble[i],this), 0,10);
+		}
+	}
+
+	private void Exchange(int men)
+	{
+		switch(men)
+		{
+			case R:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mRight[i];
+				}
+				Rotate(mRight, temp);
+				//B
+				mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
+				//U
+				mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
+				//F
+				mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
+				//D
+				mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
+				//S
+				mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
+				//E
+				mEquatorial[RU] = mRight[LC]; mEquatorial[RC] = mRight[CC]; mEquatorial[RD]=mRight[RC];
+				break;
+
+			case L:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mLeft[i];
+				}
+				Rotate(mLeft, temp);
+				//B
+				mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
+				//U
+				mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
+				//F
+				mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
+				//D
+				mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
+				//S
+				mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
+				//E
+				mEquatorial[LD] = mLeft[LC]; mEquatorial[LC] = mLeft[CC]; mEquatorial[LU] = mLeft[RC];
+				break;
+
+			case U:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mUp[i];
+				}
+				Rotate(mUp, temp);
+				//B
+				mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
+				//L
+				mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
+				//F
+				mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
+				//R
+				mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
+				//M
+				mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
+				//S
+				mStanding[LU] = mUp[LC]; mStanding[CU] = mUp[CC]; mStanding[RU] = mUp[RC];
+				break;
+
+			case D:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mDown[i];
+				}
+				Rotate(mDown, temp);
+				//R
+				mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
+				//B
+				mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
+				//L
+				mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
+				//F
+				mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
+				//M
+				mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
+				//S
+				mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+				break;
+
+			case F:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mFront[i];
+				}
+				Rotate(mFront, temp);
+				//R
+				mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
+				//D
+				mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
+				//L
+				mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
+				//U
+				mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
+				//M
+				mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
+				//E
+				mEquatorial[LU] = mFront[LC]; mEquatorial[CU] = mFront[CC]; mEquatorial[RU] = mFront[RC];
+				break;
+
+			case B:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mBack[i];
+				}
+				Rotate(mBack, temp);
+				//L
+				mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
+				//D
+				mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
+				//R
+				mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
+				//U
+				mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
+				//M
+				mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
+				//E
+				mEquatorial[LD] = mBack[RC]; mEquatorial[CD] = mBack[CC]; mEquatorial[RD] = mBack[LC];
+				break;
+
+			case M:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mMiddle[i];
+				}
+				Rotate(mMiddle, temp);
+				mUp[CU] = mBack[CU] = mMiddle[LU];
+				mUp[CC] = mStanding[CU] = mMiddle[CU];
+				mUp[CD] = mFront[CU] = mMiddle[RU];
+				mBack[CC] = mEquatorial[CD] = mMiddle[LC];
+				mFront[CC] = mEquatorial[CU] = mMiddle[RC];
+				mDown[CD] = mBack[CD] = mMiddle[LD];
+				mDown[CC] = mStanding[CD] = mMiddle[CD];
+				mDown[CU] = mFront[CD] = mMiddle[RD];
+				break;
+
+			case S:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mStanding[i];
+				}
+				Rotate(mStanding, temp);
+				mUp[LC] = mLeft[CU] = mStanding[LU];
+				mUp[CC] = mMiddle[CU] = mStanding[CU];
+				mUp[RC] = mRight[CU] = mStanding[RU];
+				mLeft[CC] = mEquatorial[LC] = mStanding[LC];
+				mRight[CC] = mEquatorial[RC] = mStanding[RC];
+				mLeft[CD] = mDown[LC] = mStanding[LD];
+				mDown[CC] = mMiddle[CD] = mStanding[CD];
+				mRight[CD] = mDown[RC] = mStanding[RD];
+				break;
+
+			case E:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mEquatorial[i];
+				}
+				Rotate(mEquatorial, temp);
+				mLeft[LC] = mBack[RC] = mEquatorial[LD];
+				mBack[CC] = mMiddle[LC] = mEquatorial[CD];
+				mRight[RC] = mBack[LC] = mEquatorial[RD];
+				mLeft[CC] = mStanding[LC] = mEquatorial[LC];
+				mRight[CC] = mStanding[RC] = mEquatorial[RC];
+				mLeft[RC] = mFront[LC] = mEquatorial[LU];
+				mFront[CC] = mMiddle[RC] = mEquatorial[CU];
+				mRight[LC] = mFront[RC] = mEquatorial[RU];
+				break;
+
+			case R | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mRight[i];
+				}
+				RotateRev(mRight, temp);
+				//B
+				mBack[LU] = mRight[RU]; mBack[LC] = mRight[RC]; mBack[LD] = mRight[RD];
+				//U
+				mUp[RU] = mRight[RU]; mUp[RC] = mRight[CU]; mUp[RD] = mRight[LU];
+				//F
+				mFront[RU] = mRight[LU]; mFront[RC] = mRight[LC]; mFront[RD] = mRight[LD];
+				//D
+				mDown[RU] = mRight[LD]; mDown[RC] = mRight[CD]; mDown[RD] = mRight[RD];
+				//S
+				mStanding[RU] = mRight[CU]; mStanding[RC] = mRight[CC]; mStanding[RD] = mRight[CD];
+				//E
+				mEquatorial[RU] = mRight[LC]; mEquatorial[RC] = mRight[CC]; mEquatorial[RD]=mRight[RC];
+				break;
+
+			case L | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mLeft[i];
+				}
+				RotateRev(mLeft, temp);
+				//B
+				mBack[RU] = mLeft[LU]; mBack[RC] = mLeft[LC]; mBack[RD] = mLeft[LD];
+				//U
+				mUp[LU] = mLeft[LU]; mUp[LC] = mLeft[CU]; mUp[LD] = mLeft[RU];
+				//F
+				mFront[LU] = mLeft[RU]; mFront[LC] = mLeft[RC]; mFront[LD] = mLeft[RD];
+				//D
+				mDown[LU] = mLeft[RD]; mDown[LC] = mLeft[CD]; mDown[LD] = mLeft[LD];
+				//S
+				mStanding[LU] = mLeft[CU]; mStanding[LC] = mLeft[CC]; mStanding[LD] = mLeft[CD];
+				//E
+				mEquatorial[LD] = mLeft[LC]; mEquatorial[LC] = mLeft[CC]; mEquatorial[LU] = mLeft[RC];
+				break;
+
+			case U | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mUp[i];
+				}
+				RotateRev(mUp, temp);
+				//B
+				mBack[LU] = mUp[RU]; mBack[CU] = mUp[CU]; mBack[RU] = mUp[LU];
+				//L
+				mLeft[LU] = mUp[LU]; mLeft[CU] = mUp[LC]; mLeft[RU] = mUp[LD];
+				//F
+				mFront[LU] = mUp[LD]; mFront[CU] = mUp[CD]; mFront[RU] = mUp[RD];
+				//R
+				mRight[LU] = mUp[RD]; mRight[CU] = mUp[RC]; mRight[RU] = mUp[RU];
+				//M
+				mMiddle[LU] = mUp[CU]; mMiddle[CU] = mUp[CC]; mMiddle[RU] = mUp[CD];
+				//S
+				mStanding[LU] = mUp[LC]; mStanding[CU] = mUp[CC]; mStanding[RU] = mUp[RC];
+				break;
+
+			case D | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mDown[i];
+				}
+				RotateRev(mDown, temp);
+				//R
+				mRight[LD] = mDown[RU]; mRight[CD] = mDown[RC]; mRight[RD] = mDown[RD];
+				//B
+				mBack[LD] = mDown[RD]; mBack[CD] = mDown[CD]; mBack[RD] = mDown[LD];
+				//L
+				mLeft[LD] = mDown[LD]; mLeft[CD] = mDown[LC]; mLeft[RD] = mDown[LU];
+				//F
+				mFront[LD] = mDown[LU]; mFront[CD] = mDown[CU]; mFront[RD] = mDown[RU];
+				//M
+				mMiddle[LD] = mDown[CD]; mMiddle[CD] = mDown[CC]; mMiddle[RD] = mDown[CU];
+				//S
+				mStanding[LD] = mDown[LC]; mStanding[CD] = mDown[CC]; mStanding[RD] = mDown[RC];
+				break;
+
+			case F | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mFront[i];
+				}
+				RotateRev(mFront, temp);
+				//R
+				mRight[LU] = mFront[RU]; mRight[LC] = mFront[RC]; mRight[LD] = mFront[RD];
+				//D
+				mDown[RU] = mFront[RD]; mDown[CU] = mFront[CD]; mDown[LU] = mFront[LD];
+				//L
+				mLeft[RD] = mFront[LD]; mLeft[RC] = mFront[LC]; mLeft[RU] = mFront[LU];
+				//U
+				mUp[LD] = mFront[LU]; mUp[CD] = mFront[CU]; mUp[RD] = mFront[RU];
+				//M
+				mMiddle[RU] = mFront[CU]; mMiddle[RC] = mFront[CC]; mMiddle[RD] = mFront[CD];
+				//E
+				mEquatorial[LU] = mFront[LC]; mEquatorial[CU] = mFront[CC]; mEquatorial[RU] = mFront[RC];
+				break;
+
+			case B | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mBack[i];
+				}
+				RotateRev(mBack, temp);
+				//L
+				mLeft[LU] = mBack[RU]; mLeft[LC] = mBack[RC]; mLeft[LD] = mBack[RD];
+				//D
+				mDown[LD] = mBack[RD]; mDown[CD] = mBack[CD]; mDown[RD] = mBack[LD];
+				//R
+				mRight[RD] = mBack[LD]; mRight[RC] = mBack[LC]; mRight[RU] = mBack[LU];
+				//U
+				mUp[RU] = mBack[LU]; mUp[CU] = mBack[CU]; mUp[LU] = mBack[RU];
+				//M
+				mMiddle[LC] = mBack[CC]; mMiddle[LD] = mBack[CD]; mMiddle[LU] = mBack[CU];
+				//E
+				mEquatorial[LD] = mBack[RC]; mEquatorial[CD] = mBack[CC]; mEquatorial[RD] = mBack[LC];
+				break;
+
+			case M | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mMiddle[i];
+				}
+				RotateRev(mMiddle, temp);
+				mUp[CU] = mBack[CU] = mMiddle[LU];
+				mUp[CC] = mStanding[CU] = mMiddle[CU];
+				mUp[CD] = mFront[CU] = mMiddle[RU];
+				mBack[CC] = mEquatorial[CD] = mMiddle[LC];
+				mFront[CC] = mEquatorial[CU] = mMiddle[RC];
+				mDown[CD] = mBack[CD] = mMiddle[LD];
+				mDown[CC] = mStanding[CD] = mMiddle[CD];
+				mDown[CU] = mFront[CD] = mMiddle[RD];
+				break;
+
+			case S | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mStanding[i];
+				}
+				RotateRev(mStanding, temp);
+				mUp[LC] = mLeft[CU] = mStanding[LU];
+				mUp[CC] = mMiddle[CU] = mStanding[CU];
+				mUp[RC] = mRight[CU] = mStanding[RU];
+				mLeft[CC] = mEquatorial[LC] = mStanding[LC];
+				mRight[CC] = mEquatorial[RC] = mStanding[RC];
+				mLeft[CD] = mDown[LC] = mStanding[LD];
+				mDown[CC] = mMiddle[CD] = mStanding[CD];
+				mRight[CD] = mDown[RC] = mStanding[RD];
+				break;
+
+			case E | Rev:
+				for(int i=0;i<temp.length;i++)
+				{
+					temp[i] = mEquatorial[i];
+				}
+				RotateRev(mEquatorial, temp);
+				mLeft[LC] = mBack[RC] = mEquatorial[LD];
+				mBack[CC] = mMiddle[LC] = mEquatorial[CD];
+				mRight[RC] = mBack[LC] = mEquatorial[RD];
+				mLeft[CC] = mStanding[LC] = mEquatorial[LC];
+				mRight[CC] = mStanding[RC] = mEquatorial[RC];
+				mLeft[RC] = mFront[LC] = mEquatorial[LU];
+				mFront[CC] = mMiddle[RC] = mEquatorial[CU];
+				mRight[LC] = mFront[RC] = mEquatorial[RU];
+				break;
+
+			default:
+				break;
+		}
+	}
+
 	private class MyTimerTask extends TimerTask
 	{
 		private int cnt = 0;
 		private int men;
+		private FinishListener mListener;
 
 		public MyTimerTask(int men)
 		{
-			this.men = men;
+			this.setMen(men);
+		}
+
+		public MyTimerTask(int men,FinishListener listener)
+		{
+			this.setMen(men);
+			mListener = listener;
 		}
 
 		@Override
@@ -1051,12 +1447,16 @@ public class RubiksCube extends BranchGroup
 			{
 				this.cancel();
 				isMoving = false;
+				if(mListener != null)
+				{
+					mListener.finish(men);
+				}
 			}
 			else
 			{
-				if((men & Rev) == Rev)
+				if((getMen() & Rev) == Rev)
 				{
-					int m = men & ~Rev;
+					int m = getMen() & ~Rev;
 					switch (m)
 					{
 						case RubiksCube.R:
@@ -1131,7 +1531,7 @@ public class RubiksCube extends BranchGroup
 				}
 				else
 				{
-					switch (men)
+					switch (getMen())
 					{
 						case RubiksCube.R:
 							for(int i = 0;i<mRight.length;i++)
@@ -1266,6 +1666,16 @@ public class RubiksCube extends BranchGroup
 
 			}
 		}
+
+		public int getMen()
+		{
+			return men;
+		}
+
+		public void setMen(int men)
+		{
+			this.men = men;
+		}
 	}
 
 	enum RubikColor
@@ -1287,5 +1697,6 @@ public class RubiksCube extends BranchGroup
 			return mFileName;
 		}
 	}
+
 
 }

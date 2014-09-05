@@ -1,6 +1,5 @@
 package jp.romerome.rubikscubedemo;
 
-import java.awt.Color;
 import java.awt.Component;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
@@ -10,9 +9,7 @@ import javax.media.j3d.Shape3D;
 import javax.media.j3d.Texture2D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
-import javax.vecmath.Color3f;
 import javax.vecmath.Point3d;
-import javax.vecmath.Point3f;
 import javax.vecmath.TexCoord2f;
 import javax.vecmath.Vector3d;
 
