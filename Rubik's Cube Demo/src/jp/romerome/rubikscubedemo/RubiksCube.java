@@ -1,13 +1,19 @@
 package jp.romerome.rubikscubedemo;
+
 import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
 import java.util.EventListener;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.media.j3d.BranchGroup;
-
-import com.sun.swing.internal.plaf.metal.resources.metal;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class RubiksCube extends BranchGroup implements FinishListener
 {
@@ -52,7 +58,9 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	private double mR = 0.5;
 	private boolean isMoving;
 	private int [] mScramble;
-	private int i;
+	private int scrambleIndex;
+	private int audioIndex = 0;
+	private Clip[] mAudio;
 
 	public RubiksCube(Component component)
 	{
@@ -68,6 +76,27 @@ public class RubiksCube extends BranchGroup implements FinishListener
 		mEquatorial = new Cube[9];
 		temp = new Cube[9];
 		isMoving = false;
+
+		mAudio = new Clip[4];
+		AudioInputStream[] audioIn = new AudioInputStream[4];
+		try
+		{
+			for (int i = 0; i < 4; i++)
+			{
+                audioIn[i] = AudioSystem.getAudioInputStream(new File("sound/cube.wav"));
+                mAudio[i] = AudioSystem.getClip();
+                mAudio[i].open(audioIn[i]);
+			}
+		} catch (UnsupportedAudioFileException e)
+		{
+			e.printStackTrace();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		} catch (LineUnavailableException e)
+		{
+			e.printStackTrace();
+		}
 
 		genRubikCube();
 	}
@@ -246,8 +275,10 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Right()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(R), 0,10);
+
 
 		for(int i=0;i<temp.length;i++)
 		{
@@ -272,6 +303,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void RightRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(R | Rev), 0,10);
 
@@ -298,6 +330,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Left()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(L), 0,10);
 
@@ -324,6 +357,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void LeftRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(L | Rev), 0,10);
 
@@ -350,6 +384,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Up()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(U), 0,10);
 
@@ -376,6 +411,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void UpRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(U | Rev), 0,10);
 
@@ -402,6 +438,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Down()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(D), 0,10);
 
@@ -429,6 +466,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	{
 		{
 			if(isMoving) return;
+			Sound();
 			Timer timer = new Timer();
 			timer.schedule(new MyTimerTask(D | Rev), 0,10);
 
@@ -456,6 +494,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Front()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(F), 0,10);
 
@@ -482,6 +521,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void FrontRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(F | Rev), 0,10);
 
@@ -508,6 +548,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Back()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(B), 0,10);
 
@@ -534,6 +575,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void BackRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(B | Rev), 0,10);
 
@@ -560,6 +602,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Middle()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(M), 0,10);
 
@@ -582,6 +625,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void MiddleRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(M | Rev), 0,10);
 
@@ -604,6 +648,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Standing()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(S), 0,10);
 
@@ -626,6 +671,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void StandingRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(S | Rev), 0,10);
 
@@ -648,6 +694,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Equatorial()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(E), 0,10);
 
@@ -670,6 +717,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void EquatorialRev()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(E | Rev), 0,10);
 
@@ -692,6 +740,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeRight()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WR), 0,10);
 
@@ -750,6 +799,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeLeft()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WL), 0,10);
 
@@ -807,6 +857,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeUp()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WU), 0,10);
 
@@ -864,6 +915,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeDown()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WD), 0,10);
 
@@ -921,6 +973,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeFront()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WF), 0,10);
 
@@ -978,6 +1031,7 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void WholeBack()
 	{
 		if(isMoving) return;
+		Sound();
 		Timer timer = new Timer();
 		timer.schedule(new MyTimerTask(WB), 0,10);
 
@@ -1040,10 +1094,11 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void Shuffle()
 	{
 		if(isMoving) return;
+		Sound();
 		mScramble = Scranble();
-		i = 0;
+		scrambleIndex = 0;
 		Timer timer = new Timer();
-		timer.schedule(new MyTimerTask(mScramble[i],this), 0,10);
+		timer.schedule(new MyTimerTask(mScramble[scrambleIndex],this), 0,10);
 	}
 
 	private int[] Scranble()
@@ -1068,11 +1123,12 @@ public class RubiksCube extends BranchGroup implements FinishListener
 	public void finish(int men)
 	{
 		Exchange(men);
-		i++;
-		if(i < mScramble.length)
+		scrambleIndex++;
+		if(scrambleIndex < mScramble.length)
 		{
+			Sound();
 			Timer timer = new Timer();
-			timer.schedule(new MyTimerTask(mScramble[i],this), 0,10);
+			timer.schedule(new MyTimerTask(mScramble[scrambleIndex],this), 0,10);
 		}
 	}
 
@@ -1419,6 +1475,17 @@ public class RubiksCube extends BranchGroup implements FinishListener
 			default:
 				break;
 		}
+	}
+
+	private void Sound()
+	{
+		mAudio[audioIndex].setFramePosition(0);
+        mAudio[audioIndex].start();
+        if (audioIndex < 3) {
+            audioIndex++;
+        } else {
+            audioIndex = 0;
+        }
 	}
 
 	private class MyTimerTask extends TimerTask
